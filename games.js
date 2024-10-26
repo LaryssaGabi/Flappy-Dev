@@ -64,7 +64,7 @@ window.onload = function () {
     board = document.getElementById("gameCanvas");
     board.height = boardHeight;
     board.width = boardWidth;
-    context = board.getContext("2d"); //used for drawing on the board
+    context = board.getContext("2d"); 
 
     //load images
     onloadImg = new Image()
@@ -131,32 +131,29 @@ function update() {
     velocityY += gravity;
     let birdImgToUse;
     if (velocityY < 0) {
-        // Se o pássaro estiver subindo
         birdImgToUse = birdUpImg;
     } else if (velocityY > 0) {
-        // Se o pássaro estiver descendo
         birdImgToUse = birdDownImg;
     } else {
-        // Se o pássaro estiver parado (não subindo nem descendo)
         birdImgToUse = birdMidImg;
     }
 
-    // bird.y += velocityY;
-    bird.y = Math.max(bird.y + velocityY, 0); //apply gravity to current bird.y, limit the bird.y to top of the canvas
+
+    bird.y = Math.max(bird.y + velocityY, 0); 
     context.drawImage(birdImgToUse, bird.x, bird.y, bird.width, bird.height);
 
     if (bird.y > board.height) {
         gameOver = true;
     }
 
-    //pipes
+
     for (let i = 0; i < pipeArray.length; i++) {
         let pipe = pipeArray[i];
         pipe.x += velocityX;
         context.drawImage(pipe.img, pipe.x, pipe.y, pipe.width, pipe.height);
 
         if (!pipe.passed && bird.x > pipe.x + pipe.width) {
-            score += 0.5; //0.5 because there are 2 pipes! so 0.5*2 = 1, 1 for each set of pipes
+            score += 0.5; 
             pipe.passed = true;
             pointSound.play();
 
@@ -169,7 +166,7 @@ function update() {
 
     //clear pipes
     while (pipeArray.length > 0 && pipeArray[0].x < -pipeWidth) {
-        pipeArray.shift(); //removes first element from the array
+        pipeArray.shift(); 
     }
 
     //score
@@ -182,7 +179,6 @@ function update() {
             (boardWidth - gameOverImg.width) / 2,
             (boardHeight - gameOverImg.height) / 2
         );
-        // context.fillText("GAME OVER", 5, 90);
     }
 }
 
@@ -190,10 +186,6 @@ function placePipes() {
     if (gameOver) {
         return;
     }
-
-    //(0-1) * pipeHeight/2.
-    // 0 -> -128 (pipeHeight/4)
-    // 1 -> -128 - 256 (pipeHeight/4 - pipeHeight/2) = -3/4 pipeHeight
     let randomPipeY = pipeY - pipeHeight / 4 - Math.random() * (pipeHeight / 2);
     let openingSpace = board.height / 4;
 
@@ -234,26 +226,24 @@ function moveBird(e) {
 }
 
 function detectCollision(a, b) {
-    return a.x < b.x + b.width &&   //a's top left corner doesn't reach b's top right corner
-        a.x + a.width > b.x &&   //a's top right corner passes b's top left corner
-        a.y < b.y + b.height &&  //a's top left corner doesn't reach b's bottom left corner
-        a.y + a.height > b.y;    //a's bottom left corner passes b's top left corner
+    return a.x < b.x + b.width &&
+        a.x + a.width > b.x &&
+        a.y < b.y + b.height &&
+        a.y + a.height > b.y;    
 }
 
 function drawScore(score) {
-    let scoreStr = score.toString(); // Converte o score para string
-    let digitWidth = scoreImages[0].width; // Largura de cada dígito
-    let digitHeight = scoreImages[0].height; // Altura de cada dígito
-    let totalWidth = digitWidth * scoreStr.length; // Largura total do score
+    let scoreStr = score.toString(); 
+    let digitWidth = scoreImages[0].width;
+    let digitHeight = scoreImages[0].height; 
+    let totalWidth = digitWidth * scoreStr.length; 
 
-    // Calcula a posição inicial do primeiro dígito para centralizá-lo
     let startX = (boardWidth - totalWidth) / 2;
 
-    // Desenha cada dígito do score no canvas
     for (let i = 0; i < scoreStr.length; i++) {
-        let digit = parseInt(scoreStr[i]); // Converte o dígito de string para número
-        let x = startX + i * digitWidth; // Posição horizontal do dígito
-        let y = 140; // Posição vertical do dígito
+        let digit = parseInt(scoreStr[i]); 
+        let x = startX + i * digitWidth; 
+        let y = 140; 
         context.drawImage(scoreImages[digit], x, y, digitWidth, digitHeight);
     }
 }
